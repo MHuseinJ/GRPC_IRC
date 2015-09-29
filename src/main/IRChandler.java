@@ -41,7 +41,7 @@ public class IRChandler implements ChatIRCGrpc.ChatIRC{
     
     public ResponseString update(UpdateRequest request){
         String username = request.getName();
-        System.out.println(username + " ask update");
+        
         String retval = "";
 	for (User user : userList) {
 		if (user.getName().equals(username)) {
@@ -86,13 +86,33 @@ public class IRChandler implements ChatIRCGrpc.ChatIRC{
     public Response logout(LogoutReq request){
         String username = request.getName();
         int retval = 1;
-		for (User user : userList) {
+        if (userList.contains(new User(username))){
+            userList.remove(userList.indexOf(new User(username)));
+            retval = 0;
+            System.out.println(username + " exits the server.");
+          //System.out.println(user+" berhasil keluar dari "+channel);
+        }else{
+         try {   
+            for (User user : userList) {
 			if (user.getName().equals(username)) {
 				userList.remove(user);
 				retval = 0;
-				System.out.println(username + " exits the server.");
-			}
+				System.out.println(username + " has exit site.");
+                        }
+		
 		}
+         }catch(Exception e){
+             
+         }
+            //System.out.println(username+"tidak ada ");
+        }
+//		for (User user : userList) {
+//			if (user.getName().equals(username)) {
+//				userList.remove(user);
+//				retval = 0;
+//				System.out.println(username + " exits the server.");
+//			}
+//		}
 	return Response.newBuilder().setResponse(retval).build();
     }
     
